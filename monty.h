@@ -4,7 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <ctype.h>
+
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -17,9 +22,9 @@
  */
 typedef struct stack_s
 {
-int n;
-struct stack_s *prev;
-struct stack_s *next;
+        int n;
+        struct stack_s *prev;
+        struct stack_s *next;
 } stack_t;
 
 /**
@@ -32,26 +37,50 @@ struct stack_s *next;
  */
 typedef struct instruction_s
 {
-char *opcode;
-void (*f)(stack_t **stack, unsigned int line_number);
+        char *opcode;
+        void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-/* main.c */
+/**
+ * struct bus_s - variables struct
+ * @arg: value
+ * @file: pointer to monty file
+ * @content: line content
+ * @lifi: flag change between stack and queue
+ * 
+ * Description: carries values through the program
+ */
+typedef struct bus_s
+{
+    char *arg;
+    FILE *file;
+    char *content;
+    int lifi;
+}  bus_t;
+
+extern bus_t bus;
+
 int main(int argc, char *argv[]);
+ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+int execute(char *content, stack_t **stack, unsigned int counter, FILE *file);
+void free_stack(stack_t *head);
+void f_stack(stack_t **head, unsigned int counter);
 
-/* execute.c */
-void execute_opcode(stack_t **stack, char *line, unsigned int line_number);
+void f_push(stack_t **head, unsigned int counter);
+void f_pop(stack_t **head, unsigned int counter);
+void f_pint(stack_t **head, unsigned int counter);
+void f_pall(stack_t **head, unsigned int counter);
+void f_swap(stack_t **head, unsigned int counter);
+void f_nop(stack_t **head, unsigned int counter);
 
-/* opcodes.c */
-void push(stack_t **stack, unsigned int line_number);
-void pall(stack_t **stack, unsigned int line_number);
-void pint(stack_t **stack, unsigned int line_number);
-void pop(stack_t **stack, unsigned int line_number);
-void swap(stack_t **stack, unsigned int line_number);
-void add(stack_t **stack, unsigned int line_number);
-void nop(stack_t **stack, unsigned int line_number);
+void f_add(stack_t **head, unsigned int counter);
+void f_sub(stack_t **head, unsigned int counter);
+void f_mul(stack_t **head, unsigned int counter);
+void f_div(stack_t **head, unsigned int counter);
+void f_mod(stack_t **head, unsigned int counter);
 
-/* utils.c */
-void free_stack(stack_t **stack);
+void addnode(stack_t **head, int n);
+void addqueue(stack_t **head, int n);
+void f_queue(stack_t **head, unsigned int counter);
 
-#endif /* MONTY_H */
+#endif /** MONTY_H*/

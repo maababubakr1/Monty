@@ -1,32 +1,39 @@
 #include "monty.h"
 
 /**
- * push - Pushes an element to the stack.
- * @stack: Double pointer to the head of the stack.
- * @line_number: Line number being executed from the Monty file.
+ * f_push - function that adds node to the stack
+ * @head: double head pointer to the stack
+ * @counter: line count
+ *
+ * Return: nothing
  */
-void push(stack_t **stack, unsigned int line_number)
+void f_push(stack_t **head, unsigned int counter)
 {
-char *arg = strtok(NULL, " \n");
-int value;
+	int i, m = 0, flag = 0;
 
-if (!arg || !isdigit(*arg))
-{
-fprintf(stderr, "L%u: usage: push integer\n", line_number);
-exit(EXIT_FAILURE);
+	if (bus.arg)
+	{
+		if (bus.arg[0] == '-')
+			m++;
+		for (; bus.arg[m] != '\0'; m++)
+		{
+			if (bus.arg[m] > 57 || bus.arg[m] < 48)
+				flag = 1; }
+		if (flag == 1)
+		{ fprintf(stderr, "L%d: usage: push integer\n", counter);
+			fclose(bus.file);
+			free(bus.content);
+			free_stack(*head);
+			exit(EXIT_FAILURE); }}
+	else
+	{ fprintf(stderr, "L%d: usage: push integer\n", counter);
+		fclose(bus.file);
+		free(bus.content);
+		free_stack(*head);
+		exit(EXIT_FAILURE); }
+	i = atoi(bus.arg);
+	if (bus.lifi == 0)
+		addnode(head, i);
+	else
+		addqueue(head, i);
 }
-
-value = atoi(arg);
-if (!(*stack = malloc(sizeof(stack_t))))
-{
-fprintf(stderr, "Error: malloc failed\n");
-exit(EXIT_FAILURE);
-}
-
-(*stack)->n = value;
-(*stack)->prev = NULL;
-if ((*stack)->next)
-(*stack)->next->prev = *stack;
-(*stack)->next = *stack;
-}
-

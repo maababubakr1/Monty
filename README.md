@@ -1,1 +1,1 @@
-a monty language project
+stacks, quwuws - LIFO,FIFO using c
